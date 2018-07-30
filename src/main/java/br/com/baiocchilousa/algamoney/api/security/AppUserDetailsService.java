@@ -8,7 +8,6 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,7 +15,11 @@ import org.springframework.stereotype.Service;
 
 import br.com.baiocchilousa.algamoney.api.model.Usuario;
 import br.com.baiocchilousa.algamoney.api.repository.UsuarioRepository;
-
+/**
+ * Classe responsável pelos dados do usuário
+ * @author leolo
+ *
+ */
 @Service
 public class AppUserDetailsService implements UserDetailsService{
 
@@ -27,7 +30,7 @@ public class AppUserDetailsService implements UserDetailsService{
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
         Usuario usuario = usuarioOptional.orElseThrow(() -> new UsernameNotFoundException("Usuário e/ou senha incorretos!"));
-        return new User(email, usuario.getSenha(), getPermissoes(usuario));
+        return new UsuarioSistema(usuario, getPermissoes(usuario));
     }
 
     //Monta a lista de permissões
