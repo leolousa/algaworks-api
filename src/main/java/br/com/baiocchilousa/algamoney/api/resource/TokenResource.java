@@ -14,7 +14,7 @@ import br.com.baiocchilousa.algamoney.api.config.property.AlgamoneyApiProperty;
 
 /**
  * Classe para implementar o Logout manipulando
- * o Access Token e o Rrfresh Token 
+ * o Access Token e o Refresh Token 
  * @author leolo
  *
  */

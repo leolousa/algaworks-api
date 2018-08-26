@@ -8,5 +8,5 @@ import br.com.baiocchilousa.algamoney.api.model.Pessoa;
 
 public interface PessoaRepository extends JpaRepository<Pessoa, Long>{
 
-    public Page<Pessoa> findByNomeContaining(String nome, Pageable pageable); 
+    public Page<Pessoa> findByNomeContainingOrderByNome(String nome, Pageable pageable); 
 }

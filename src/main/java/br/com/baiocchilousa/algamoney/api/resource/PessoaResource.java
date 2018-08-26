@@ -1,6 +1,6 @@
 package br.com.baiocchilousa.algamoney.api.resource;
 
-import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -24,10 +24,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.baiocchilousa.algamoney.api.event.RecursoCriadoEvent;
-import br.com.baiocchilousa.algamoney.api.model.Lancamento;
 import br.com.baiocchilousa.algamoney.api.model.Pessoa;
 import br.com.baiocchilousa.algamoney.api.repository.PessoaRepository;
-import br.com.baiocchilousa.algamoney.api.repository.filter.LancamentoFilter;
 import br.com.baiocchilousa.algamoney.api.service.PessoaService;
 
 @RestController
@@ -47,7 +45,7 @@ public class PessoaResource {
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
     public Page<Pessoa> pesquisar(@RequestParam(required = false, defaultValue = "%") String nome, Pageable pageable) {
-        return pessoaRepository.findByNomeContaining(nome, pageable);
+        return pessoaRepository.findByNomeContainingOrderByNome(nome, pageable);
     }
     
     @PostMapping
@@ -64,15 +62,15 @@ public class PessoaResource {
     @GetMapping("/{codigo}")
     @PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
     public ResponseEntity<Pessoa> buscarPeloCodigo(@PathVariable Long codigo) {
-        Pessoa pessoa = pessoaRepository.findOne(codigo);
-        return pessoa != null ? ResponseEntity.ok(pessoa) : ResponseEntity.notFound().build();
+        Optional<Pessoa> pessoa = pessoaRepository.findById(codigo);
+        return pessoa.isPresent() ? ResponseEntity.ok(pessoa.get()) : ResponseEntity.notFound().build();
     }
     
     @DeleteMapping("/{codigo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('ROLE_REMOVER_PESSOA') and #oauth2.hasScope('write')")
     public void remover(@PathVariable Long codigo) {
-        pessoaRepository.delete(codigo);
+        pessoaRepository.deleteById(codigo);
     }
     
     @PutMapping("/{codigo}")
